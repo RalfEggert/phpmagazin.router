@@ -8,44 +8,14 @@
  */
 
 use Aura\Router\RouterContainer;
-use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\ServerRequestFactory;
 
+define('ROUTER_NAME', 'Aura.Router');
+define('ROUTER_ROUTE', '/aura');
+
 require_once __DIR__ . '/../../vendor/autoload.php';
-
-$homeHandler = function () {
-    $tpl = implode('', file(__DIR__ . '/tpl/home.html'));
-
-    return new HtmlResponse($tpl);
-};
-
-$showHandler = function ($request) {
-    /** @var ServerRequestInterface $request */
-    $id = (int)$request->getAttribute('id');
-
-    $tpl = implode('', file(__DIR__ . '/tpl/show.html'));
-    $tpl = str_replace('%%id%%', $id, $tpl);
-
-    return new HtmlResponse($tpl);
-};
-
-$createGetHandler = function () {
-    $tpl = implode('', file(__DIR__ . '/tpl/create-get.html'));
-
-    return new HtmlResponse($tpl);
-};
-
-$createPostHandler = function ($request) {
-    /** @var ServerRequestInterface $request */
-    $postData = $request->getParsedBody();
-    $title    = (string)$postData['title'];
-
-    $tpl = implode('', file(__DIR__ . '/tpl/create-post.html'));
-    $tpl = str_replace('%%title%%', $title, $tpl);
-
-    return new HtmlResponse($tpl);
-};
+require_once __DIR__ . '/../../handler/handler.php';
 
 $request = ServerRequestFactory::fromGlobals(
     $_SERVER,
@@ -68,18 +38,16 @@ $map->post('aura.create.post', '/aura/create', $createPostHandler);
 $route = $routerContainer->getMatcher()->match($request);
 
 if (!$route) {
-    $tpl = implode('', file(__DIR__ . '/tpl/404.html'));
-
-    $response = new HtmlResponse($tpl);
+    $response = $fileNotFoundHandler();
 } else {
     foreach ($route->attributes as $key => $val) {
         $request = $request->withAttribute($key, $val);
     }
 
-    $callable = $route->handler;
+    $handler = $route->handler;
 
     /** @var HtmlResponse $response */
-    $response = $callable($request);
+    $response = $handler($request);
 }
 
 foreach ($response->getHeaders() as $name => $values) {
