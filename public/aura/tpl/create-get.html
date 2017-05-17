@@ -8,7 +8,7 @@
 
 <html>
 <head>
-  <title>PHP Magazin: PHP Router</title>
+  <title>PHP Magazin: PHP Router Aura.Router</title>
   <link rel="stylesheet" href="/css/bootstrap-3.3.7/bootstrap.min.css">
   <link rel="stylesheet" href="/css/bootstrap-3.3.7/bootstrap-theme.min.css">
   <link rel="stylesheet" href="/css/styles.css">
@@ -16,18 +16,13 @@
 <body>
 <div class="container">
   <h1>PHP Magazin: PHP Router</h1>
-  <div class="row">
-    <div class="col-sm-3">
-      <h2>Aura.Router</h2>
-      <a href="/aura" class="btn btn-primary">Aura.Router</a>
-    </div>
-    <div class="col-sm-3">
-      <h2>Aura.Router</h2>
-      <ul>
-        <li><a href="/aura">Home</a></li>
-      </ul>
-    </div>
-  </div>
+  <h2>Neuer Blogbeitrag</h2>
+  <form method="post" action="/aura/create">
+    <label for="title">Titel</label>
+    <input type="text" name="title">
+    <input type="submit" name="submit" value="Speichern">
+  </form>
+  <a href="/aura" class="btn btn-success">Zurück</a>
 </div>
 </body>
 </html>
