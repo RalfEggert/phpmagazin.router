@@ -8,46 +8,35 @@
  */
 
 use Aura\Router\RouterContainer;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\ServerRequestFactory;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-$response = new Zend\Diactoros\Response();
-
-$homeHandler = function ($request, $response) {
+$homeHandler = function () {
     $tpl = implode('', file(__DIR__ . '/tpl/home.html'));
 
-    /** @var ResponseInterface $response */
-    $response->getBody()->write($tpl);
-
-    return $response;
+    return new HtmlResponse($tpl);
 };
 
-$showHandler = function ($request, $response) {
+$showHandler = function ($request) {
     /** @var ServerRequestInterface $request */
     $id = (int)$request->getAttribute('id');
 
     $tpl = implode('', file(__DIR__ . '/tpl/show.html'));
     $tpl = str_replace('%%id%%', $id, $tpl);
 
-    /** @var ResponseInterface $response */
-    $response->getBody()->write($tpl);
-
-    return $response;
+    return new HtmlResponse($tpl);
 };
 
-$createGetHandler = function ($request, $response) {
+$createGetHandler = function () {
     $tpl = implode('', file(__DIR__ . '/tpl/create-get.html'));
 
-    /** @var ResponseInterface $response */
-    $response->getBody()->write($tpl);
-
-    return $response;
+    return new HtmlResponse($tpl);
 };
 
-$createPostHandler = function ($request, $response) {
+$createPostHandler = function ($request) {
     /** @var ServerRequestInterface $request */
     $postData = $request->getParsedBody();
     $title    = (string)$postData['title'];
@@ -55,10 +44,7 @@ $createPostHandler = function ($request, $response) {
     $tpl = implode('', file(__DIR__ . '/tpl/create-post.html'));
     $tpl = str_replace('%%title%%', $title, $tpl);
 
-    /** @var ResponseInterface $response */
-    $response->getBody()->write($tpl);
-
-    return $response;
+    return new HtmlResponse($tpl);
 };
 
 $request = ServerRequestFactory::fromGlobals(
@@ -79,33 +65,27 @@ $map->get('aura.show', '/aura/{id}', $showHandler)->tokens(
 $map->get('aura.create.get', '/aura/create', $createGetHandler);
 $map->post('aura.create.post', '/aura/create', $createPostHandler);
 
-// get the route matcher from the container ...
-$matcher = $routerContainer->getMatcher();
+$route = $routerContainer->getMatcher()->match($request);
 
-// .. and try to match the request to a route.
-$route = $matcher->match($request);
 if (!$route) {
-    echo 'Keine Route für die Anfrage gefunden.';
-    exit;
+    $tpl = implode('', file(__DIR__ . '/tpl/404.html'));
+
+    $response = new HtmlResponse($tpl);
+} else {
+    foreach ($route->attributes as $key => $val) {
+        $request = $request->withAttribute($key, $val);
+    }
+
+    $callable = $route->handler;
+
+    /** @var HtmlResponse $response */
+    $response = $callable($request);
 }
 
-// add route attributes to the request
-foreach ($route->attributes as $key => $val) {
-    $request = $request->withAttribute($key, $val);
-}
-
-// dispatch the request to the route handler.
-// (consider using https://github.com/auraphp/Aura.Dispatcher
-// in place of the one callable below.)
-$callable = $route->handler;
-
-/** @var ResponseInterface $response */
-$response = $callable($request, $response);
-
-// emit the response
 foreach ($response->getHeaders() as $name => $values) {
     foreach ($values as $value) {
         header(sprintf('%s: %s', $name, $value), false);
     }
 }
+
 echo $response->getBody();
