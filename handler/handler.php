@@ -43,6 +43,10 @@ $methodNotAllowedHandler = function () use ($renderer) {
 };
 
 $showHandler = function ($request) use ($renderer) {
+    if (is_array($request) && isset($request['request'])) {
+        $request = $request['request'];
+    }
+
     /** @var ServerRequestInterface $request */
     $id = (int)$request->getAttribute('id');
 
@@ -63,6 +67,10 @@ $createGetHandler = function () use ($renderer) {
 };
 
 $createPostHandler = function ($request) use ($renderer) {
+    if (is_array($request) && isset($request['request'])) {
+        $request = $request['request'];
+    }
+
     /** @var ServerRequestInterface $request */
     $postData = $request->getParsedBody();
     $title    = (string)$postData['title'];

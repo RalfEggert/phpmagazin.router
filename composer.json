@@ -13,11 +13,15 @@
       "role": "Developer"
     }
   ],
+  "config": {
+    "sort-packages": true
+  },
   "require": {
     "php": "^7.0",
     "aura/router": "^3.1",
-    "zendframework/zend-diactoros": "^1.4",
-    "nikic/fast-route": "^1.2"
+    "corneltek/pux": "^2.0",
+    "nikic/fast-route": "^1.2",
+    "zendframework/zend-diactoros": "^1.4"
   },
   "autoload": {
     "psr-4": {

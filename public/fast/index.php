@@ -20,6 +20,14 @@ define('ROUTER_ROUTE', '/fast');
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../handler/handler.php';
 
+$request = ServerRequestFactory::fromGlobals(
+    $_SERVER,
+    $_GET,
+    $_POST,
+    $_COOKIE,
+    $_FILES
+);
+
 /** @var RouteCollector $routeCollector */
 $routeCollector = new RouteCollector(
     new Std(), new GroupCountBasedGenerator()
@@ -30,14 +38,6 @@ $routeCollector->addRoute('GET', '/fast/create', $createGetHandler);
 $routeCollector->addRoute('POST', '/fast/create', $createPostHandler);
 
 $dispatcher = new GroupCountBasedDispatcher($routeCollector->getData());
-
-$request = ServerRequestFactory::fromGlobals(
-    $_SERVER,
-    $_GET,
-    $_POST,
-    $_COOKIE,
-    $_FILES
-);
 
 $routeInfo = $dispatcher->dispatch(
     $request->getMethod(), $request->getUri()->getPath()
