@@ -15,7 +15,7 @@ define('ROUTER_NAME', 'Aura.Router');
 define('ROUTER_ROUTE', '/aura');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../../handler/handler.php';
+require_once __DIR__ . '/../../handler/other_handlers.php';
 
 $request = ServerRequestFactory::fromGlobals(
     $_SERVER,

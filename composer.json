@@ -20,6 +20,7 @@
     "php": "^7.0",
     "aura/router": "^3.1",
     "corneltek/pux": "^2.0",
+    "klein/klein": "^2.1",
     "nikic/fast-route": "^1.2",
     "zendframework/zend-diactoros": "^1.4"
   },

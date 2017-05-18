@@ -18,7 +18,7 @@ define('ROUTER_NAME', 'FastRoute');
 define('ROUTER_ROUTE', '/fast');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../../handler/handler.php';
+require_once __DIR__ . '/../../handler/other_handlers.php';
 
 $request = ServerRequestFactory::fromGlobals(
     $_SERVER,

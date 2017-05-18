@@ -9,13 +9,14 @@
 
 use Pux\Mux;
 use Pux\RouteExecutor;
+use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 
 define('ROUTER_NAME', 'Pux');
 define('ROUTER_ROUTE', '/pux');
 
 require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../../handler/handler.php';
+require_once __DIR__ . '/../../handler/other_handlers.php';
 
 $request = ServerRequestFactory::fromGlobals(
     $_SERVER,
@@ -39,6 +40,7 @@ if (isset($route[3]['variables']) && isset($route[3]['vars'])) {
     }
 }
 
+/** @var Response $response */
 $response = RouteExecutor::execute($route, ['request' => $request]);
 
 foreach ($response->getHeaders() as $name => $values) {
