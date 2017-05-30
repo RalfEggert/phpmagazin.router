@@ -16,6 +16,8 @@ define('ROUTER_ROUTE', '/klein');
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../handler/klein_handlers.php';
 
+$timeStart = microtime(true);
+
 $request = ServerRequestFactory::fromGlobals(
     $_SERVER,
     $_GET,
@@ -31,3 +33,8 @@ $klein->respond('GET', '/klein/create', $createGetHandler);
 $klein->respond('POST', '/klein/create', $createPostHandler);
 
 $klein->dispatch();
+
+$timeEnd = microtime(true);
+
+$fileName = __DIR__ . '/../../data/log/klein.log';
+file_put_contents($fileName, ($timeEnd - $timeStart) . "\n", FILE_APPEND);

@@ -18,6 +18,8 @@ define('ROUTER_ROUTE', '/pux');
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../handler/other_handlers.php';
 
+$timeStart = microtime(true);
+
 $request = ServerRequestFactory::fromGlobals(
     $_SERVER,
     $_GET,
@@ -51,3 +53,7 @@ foreach ($response->getHeaders() as $name => $values) {
 
 echo $response->getBody();
 
+$timeEnd = microtime(true);
+
+$fileName = __DIR__ . '/../../data/log/pux.log';
+file_put_contents($fileName, ($timeEnd - $timeStart) . "\n", FILE_APPEND);
